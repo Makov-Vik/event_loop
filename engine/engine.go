@@ -19,7 +19,15 @@ type EventLoop struct {
 	stop       bool
 }
 
+func NewStopCommand() *stopCommand {
+	return &stopCommand{}
+}
+
 type stopCommand struct{}
+
+func (s stopCommand) Execute(h Handler) {
+	h.(*EventLoop).stop = true
+}
 
 type CommandQueue struct {
 	mu sync.Mutex
@@ -48,10 +56,6 @@ func (l *EventLoop) Post(c Command) {
 	l.q.push(c)
 }
 
-
-func (s stopCommand) Execute(h Handler) {
-	h.(*EventLoop).stop = true
-}
 
 func (l *EventLoop) AwaitFinish() {
 	l.Post(stopCommand{})
