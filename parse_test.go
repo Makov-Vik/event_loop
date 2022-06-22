@@ -38,3 +38,14 @@ func TestParserDefault(t *testing.T) {
 		assert.Equal(t, reflect.TypeOf(command), reflect.TypeOf(examplePrint))
 	}
 }
+
+func TestLoopPosting(t *testing.T) {
+	command := engine.NewPrintCommand("aloha")
+
+	eventLoop := new(engine.EventLoop)
+	eventLoop.Start()
+	eventLoop.AwaitFinish()
+
+	err := eventLoop.Post(command)
+	assert.Error(t, err)
+}
