@@ -13,7 +13,7 @@ type Handler interface {
 }
 
 type EventLoop struct {
-	q *CommandQueue
+	q *сommandQueue
 
 	stopSignal chan struct{}
 	stop       bool
@@ -29,7 +29,7 @@ func (s stopCommand) Execute(h Handler) {
 	h.(*EventLoop).stop = true
 }
 
-type CommandQueue struct {
+type сommandQueue struct {
 	mu sync.Mutex
 	a  []Command
 
@@ -38,7 +38,7 @@ type CommandQueue struct {
 }
 
 func (l *EventLoop) Start() {
-	l.q = &CommandQueue{
+	l.q = &сommandQueue{
 		notEmpty: make(chan struct{}),
 	}
 	l.stopSignal = make(chan struct{})
@@ -64,7 +64,7 @@ func (l *EventLoop) AwaitFinish() {
 
 
 
-func (cq *CommandQueue) push(c Command) {
+func (cq *сommandQueue) push(c Command) {
 	cq.mu.Lock()
 	defer cq.mu.Unlock()
 	cq.a = append(cq.a, c)
@@ -75,7 +75,7 @@ func (cq *CommandQueue) push(c Command) {
 	}
 }
 
-func (cq *CommandQueue) pull() Command {
+func (cq *сommandQueue) pull() Command {
 	cq.mu.Lock()
 	defer cq.mu.Unlock()
 
@@ -92,6 +92,6 @@ func (cq *CommandQueue) pull() Command {
 	return res
 }
 
-func (cq *CommandQueue) empty() bool {
+func (cq *сommandQueue) empty() bool {
 	return len(cq.a) == 0
 }
