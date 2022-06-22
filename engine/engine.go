@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"errors"
 	"sync"
 )
 
@@ -9,7 +10,7 @@ type Command interface {
 }
 
 type Handler interface {
-	Post(c Command)
+	Post(c Command) error
 }
 
 type EventLoop struct {
@@ -52,8 +53,13 @@ func (l *EventLoop) Start() {
 	}()
 }
 
-func (l *EventLoop) Post(c Command) {
-	l.q.push(c)
+func (l *EventLoop) Post(c Command) error {
+	if l.stop == true {
+		return errors.New("Error. Event loop isn't running")
+	} else {
+		l.q.push(c)
+		return nil
+	}
 }
 
 
